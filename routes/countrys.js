@@ -1,57 +1,29 @@
-import express from "express"
+import express from "express";
+import {
+  countByCity,
+  createCountry,
+  deleteCountry,
+  getCountry,
+  getCountrys,
+  updateCountry,
+} from "../controllers/country.js";
 import Country from "../models/Country.js";
-
+import {verifyAdmin} from "../utils/verifyToken.js"
 const router = express.Router();
 
 //CREATE
-router.post("/", async(req, res)=>{
-    const newCountry = new Country(req.body)
-    
-    
-    
-    try {
-        const savedCountry = await newCountry.save()
-        res.status(200).json(savedCountry)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+router.post("/", verifyAdmin, createCountry);
+
 //UPDATE
-router.put("/:id", async(req, res)=>{
-    try {
-        const updatedCountry = await Country.findByIdAndUpdate(req.params.id, { $set: req.body}, {new: true})
-        res.status(200).json(updatedCountry)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+router.put("/:id", verifyAdmin, updateCountry);
 //DELETE
-router.delete("/:id", async(req, res)=>{
-    try {
-        await Country.findByIdAndDelete(req.params.id)
-        res.status(200).json("Country has been deleted from DB")
-
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+router.delete("/:id", verifyAdmin, deleteCountry);
 //GET
-router.get("/:id", async(req, res)=>{
-    try {
-        const country = await Country.findById(req.params.id)
-        res.status(200).json(country)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-//GET ALL
-router.get("/", async(req, res)=>{
-    try {
-        const countrys = await Country.find(req.params.id)
-        res.status(200).json(countrys)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
 
-export default router
+router.get("/find/:id", getCountry);
+//GET ALL
+
+router.get("/", getCountrys);
+router.get("/countByCity", countByCity);
+
+export default router;
