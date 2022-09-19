@@ -1,11 +1,3 @@
-<<<<<<< Updated upstream
-import express from "express"
-
-const router = express.Router();
-
-
-export default router
-=======
 import express from "express";
 import {
   updateUser,
@@ -42,4 +34,3 @@ router.get("/:id", verifyUser, getUser);
 router.get("/", verifyAdmin, getUsers);
 
 export default router;
->>>>>>> Stashed changes
