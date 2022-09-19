@@ -6,9 +6,7 @@ const router = express.Router();
 //CREATE
 router.post("/", async(req, res)=>{
     const newCountry = new Country(req.body)
-    
-    
-    
+
     try {
         const savedCountry = await newCountry.save()
         res.status(200).json(savedCountry)
@@ -45,12 +43,13 @@ router.get("/:id", async(req, res)=>{
     }
 })
 //GET ALL
-router.get("/", async(req, res)=>{
+router.get("/", async (req, res, next)=>{
+    //if (failed) return next(createError(401, "You are not auth"));
     try {
         const countrys = await Country.find(req.params.id)
         res.status(200).json(countrys)
     } catch (error) {
-        res.status(500).json(error)
+        next(error)
     }
 })
 
