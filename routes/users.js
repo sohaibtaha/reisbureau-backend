@@ -1,57 +1,36 @@
-import express from "express"
-import User from "../models/User.js";
+import express from "express";
+import {
+  updateUser,
+  deleteUser,
+  getUser,
+  getUsers,
+} from "../controllers/user.js";
+import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 
 const router = express.Router();
 
-//CREATE
-router.post("/", async(req, res)=>{
-    const newUser = new User(req.body)
-    
-    
-    
-    try {
-        const savedUser = await newUser.save()
-        res.status(200).json(savedUser)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+ router.get("/checkauthentication", verifyToken, (req,res,next)=>{
+   res.send("hello user, you are logged in")
+ })
+
+// router.get("/checkuser/:id", verifyUser, (req,res,next)=>{
+//   res.send("hello user, you are logged in and you can delete your account")
+// })
+
+// router.get("/checkadmin/:id", verifyAdmin, (req,res,next)=>{
+//   res.send("hello admin, you are logged in and you can delete all accounts")
+// })
+
 //UPDATE
-router.put("/:id", async(req, res)=>{
-    try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: req.body}, {new: true})
-        res.status(200).json(updatedUser)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+router.put("/:id", verifyUser, updateUser);
+
 //DELETE
-router.delete("/:id", async(req, res)=>{
-    try {
-        await User.findByIdAndDelete(req.params.id)
-        res.status(200).json("User has been deleted from DB")
+router.delete("/:id", verifyUser, deleteUser);
 
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
 //GET
-router.get("/:id", async(req, res)=>{
-    try {
-        const user = await User.findById(req.params.id)
-        res.status(200).json(user)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-//GET ALL
-router.get("/", async(req, res)=>{
-    try {
-        const users = await User.find(req.params.id)
-        res.status(200).json(users)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
+router.get("/:id", verifyUser, getUser);
 
-export default router
+//GET ALL
+router.get("/", verifyAdmin, getUsers);
+
+export default router;

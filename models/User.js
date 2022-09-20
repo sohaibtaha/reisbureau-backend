@@ -1,45 +1,41 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    country: {
+      type: String,
+      required: false,
+    },
+    img: {
+      type: String,
+    },
+    city: {
+      type: String,
+      required: false,
+    },
+    phone: {
+      type: String,
+      required: false,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
-const UserSchema = new mongoose.Schema({
-first_name:{
-    type: String,
-    required:true
-},
-last_name:{
-    type: String,
-    required:true
-},
-email: {
-    type: String,
-    // There are two ways for an promise-based async validator to fail:
-    // 1) If the promise rejects, Mongoose assumes the validator failed with the given error.
-    // 2) If the promise resolves to `false`, Mongoose assumes the validator failed and creates an error with the given `message`.
-    validate: {
-      validator: () => Promise.resolve(false),
-      message: 'Email validation failed'
-    }
-},
-adress:{
-    type: String,
-    required:true
-},
-postal_code:{
-    type: String,
-    required:true
-},
-city:{
-    type: String,
-    required:true
-},
-country_code:{
-    type: String,
-    required:true
-},
-phone:{
-    type: String,
-    required:true
-},
-})
-
-export default mongoose.model("User",UserSchema)
+export default mongoose.model("User", UserSchema);
